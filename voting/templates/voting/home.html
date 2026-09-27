@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Voting System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f7;
+            margin: 0;
+        }
+
+        nav {
+            background: #1f3c88;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .header {
+            background: #1f3c88;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        .container {
+            width: 500px;
+            max-width: 90%;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 95%;
+            padding: 12px;
+            margin: 8px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .candidate {
+            display: block;
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #1f3c88;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #162d68;
+        }
+
+        .error {
+            background: #ffe0e0;
+            color: #b00020;
+            padding: 12px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .results {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #1f3c88;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">🗳️ Online Voting System</div>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'results' %}">Results</a>
+            <a href="/admin/">Admin</a>
+        </div>
+    </nav>
+
+    <div class="header">
+        <h1>Online Voting System</h1>
+        <p>Cast your vote securely</p>
+    </div>
+
+    <div class="container">
+
+        <h2>Cast Your Vote</h2>
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'vote' %}">
+            {% csrf_token %}
+
+            <label><strong>Voter Name</strong></label>
+
+            <input type="text"
+                   name="voter_name"
+                   placeholder="Enter your name"
+                   required>
+
+            <h3>Select Candidate</h3>
+
+            {% for candidate in candidates %}
+
+                <label class="candidate">
+                    <input type="radio"
+                           name="candidate"
+                           value="{{ candidate.id }}"
+                           required>
+
+                    <strong>{{ candidate.name }}</strong>
+                    <br>
+                    {{ candidate.party }}
+                </label>
+
+            {% empty %}
+
+                <p>No candidates available.</p>
+
+            {% endfor %}
+
+            <button type="submit">Cast Vote</button>
+
+        </form>
+
+        <a class="results" href="{% url 'results' %}">
+            📊 View Voting Results
+        </a>
+
+    </div>
+
+</body>
+</html>
